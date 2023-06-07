@@ -58,6 +58,10 @@ def register():
     users[username] = {'password': password_hash}
     return jsonify({'message': 'User registered successfully'})
 
+@app.route('/protected')
+@flask_login.login_required
+def protected():
+    return 'Logged in as: ' + flask_login.current_user.id
 
 @app.route("/tiles")
 def tiles():
