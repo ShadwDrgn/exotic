@@ -1,0 +1,33 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/vue@3"></script>
+<link href="/static/css/style.css" rel="stylesheet">
+<div id="poop">
+    <div class="map" id="map">
+        <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]" v-for="tile in tiles">{{ tile.x }}, {{ tile.y }}</div>
+    </div>
+    <div id="description">{{ desc }}</div>
+</div>
+<div class="resource-orb" style="background: linear-gradient(to top, red, red 50%, transparent 50%, transparent 100%);bottom: 10px;left:20%;"></div>
+<div class="resource-orb" style="background: linear-gradient(to top, blue, blue 30%, transparent 30%, transparent 100%);bottom: 10px;right:20%;"></div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const current_character = urlParams.get('char');
+    const { createApp } = Vue;
+    createApp({
+        data() {
+          return { 
+              tiles: null,
+              desc: null
+          }
+        },
+        methods: {
+            character_move(x, y) {
+                axios.get('/move', { params: {char: current_character, x: x, y: y}}).then(response => { this.tiles = response.data;});
+            }
+        },
+        mounted() {
+            axios.get('/tiles?char=' + current_character).then(response => { console.log(response); this.tiles = response.data;});
+        }
+    }).mount('#poop');
+</script>
