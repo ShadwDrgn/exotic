@@ -96,3 +96,9 @@ class Character(Mobile):
 
     def max_ap(self):
         return self.base_action_points
+
+    def load(character_name):
+        found_character = [c for c in Game.characters if c.name == character_name]
+        if len(found_character) > 0:
+            return found_character[0]
+        return None

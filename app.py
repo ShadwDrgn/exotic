@@ -1,45 +1,19 @@
 from classes import *
-from flask import Flask, current_app, jsonify, request
+from flask import Flask, current_app, jsonify, request, abort
 app = Flask(__name__)
 
 @app.route("/tiles")
 def tiles():
-    current_character = [c for c in Game.characters if c.name == request.args.get('char')]
-    if len(current_character) > 0:
-        current_character = current_character[0]
-        print(current_character.x, flush=True)
-        print(current_character.world.tiles[0].x, flush=True)
-        tiles = [t.toJSON() for t in current_character.world.tiles if abs(t.x - current_character.x) <= 2 and abs(t.y - current_character.y) <=2]
-        return jsonify(tiles)
-    tile_data = [{'x': 1, 'y': 1, 'desc': 'Swamp'},
- {'x': 2, 'y': 1, 'desc': 'Forest'},
- {'x': 3, 'y': 1, 'desc': 'Taco stand'},
- {'x': 4, 'y': 1, 'desc': 'Swamp'},
- {'x': 5, 'y': 1, 'desc': 'Path'},
- {'x': 1, 'y': 2, 'desc': 'Swamp'},
- {'x': 2, 'y': 2, 'desc': 'Swamp'},
- {'x': 3, 'y': 2, 'desc': 'Forest'},
- {'x': 4, 'y': 2, 'desc': 'Island'},
- {'x': 5, 'y': 2, 'desc': 'Path'},
- {'x': 1, 'y': 3, 'desc': 'Taco stand'},
- {'x': 2, 'y': 3, 'desc': 'Forest'},
- {'x': 3, 'y': 3, 'desc': 'Path'},
- {'x': 4, 'y': 3, 'desc': 'Island'},
- {'x': 5, 'y': 3, 'desc': 'Swamp'},
- {'x': 1, 'y': 4, 'desc': 'Forest'},
- {'x': 2, 'y': 4, 'desc': 'Path'},
- {'x': 3, 'y': 4, 'desc': 'Island'},
- {'x': 4, 'y': 4, 'desc': 'Taco stand'},
- {'x': 5, 'y': 4, 'desc': 'Island'},
- {'x': 1, 'y': 5, 'desc': 'Island'},
- {'x': 2, 'y': 5, 'desc': 'Taco stand'},
- {'x': 3, 'y': 5, 'desc': 'Swamp'},
- {'x': 4, 'y': 5, 'desc': 'Taco stand'},
- {'x': 5, 'y': 5, 'desc': 'Path'}]
-    return jsonify(tile_data)
+    current_character = Character.load(request.args.get('char'))
+    if current_character is None:
+        return jsonify({'error': 'Character invalid'}), 400
+    tiles = [t.toJSON() for t in current_character.world.tiles if abs(t.x - current_character.x) <= 2 and abs(t.y - current_character.y) <=2]
+    return jsonify(tiles)
 
 @app.route("/initialize")
 def initialize():
+    if not all(map(lambda v: v in request.args, ('x', 'y', 'char'))):
+        return jsonify({'error': 'x, y, and char fields are all required'}), 400
     if any(i.name == 'prime' for i in Game.worlds):
         prime = [w for w in Game.worlds if w.name == 'prime'][0]
     else:
