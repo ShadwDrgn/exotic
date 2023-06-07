@@ -1,7 +1,7 @@
 from classes import Character, World, Game
 from account_management import User
 from flask import Flask, current_app, jsonify, request, abort
-from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
