@@ -23,14 +23,14 @@
         },
         methods: {
             character_move(x, y) {
-                axios.get('/move', { params: {char: current_character, x: x, y: y}}).then(response => { this.tiles = response.data;});
+                axios.get('/move', { params: {char: current_character, x: x, y: y}}).then(response => {
+                    this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
+                });
             }
         },
         mounted() {
             axios.get('/tiles?char=' + current_character).then(response => {
-                tiles= response.data
-                tiles.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
-                this.tiles = response.data;
+                this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);;
             });
         }
     }).mount('#poop');
