@@ -1,18 +1,18 @@
-from classes import *
+from classes import Character, World, Game
 from flask import Flask, current_app, jsonify, request, abort
-import flask_login
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'giant stupid string that is definitely at total secret!!'
-login_manager = flask_login.LoginManager()
+login_manager = LoginManager()
 login_manager.init_app(app)
 
 users = {
     'ShadwDrgn': {'password': 'pbkdf2:sha256:600000$OtUeSwJ3spOhzAjf$fda51497ebebb9b82914332c8bd22aaffb9f536565201f212af1ae8848a7caa1'}
 }
 
-class User(flask_login.UserMixin):
+class User(UserMixin):
     pass
 
 @login_manager.user_loader
@@ -37,9 +37,15 @@ def login():
     if username in users and check_password_hash(users[username]['password'], request.form['password']):
         user = User()
         user.id = username
-        flask_login.login_user(user)
+        login_user(user)
         return jsonify({'message': 'logged in successfully'})
+    logout_user()
     return jsonify({'error': 'Bad Login'}), 401
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return jsonify({'message': 'User Logged out'})
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -59,9 +65,9 @@ def register():
     return jsonify({'message': 'User registered successfully'})
 
 @app.route('/protected')
-@flask_login.login_required
+@login_required
 def protected():
-    return 'Logged in as: ' + flask_login.current_user.id
+    return 'Logged in as: ' + current_user.id
 
 @app.route("/tiles")
 def tiles():
