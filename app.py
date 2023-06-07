@@ -1,4 +1,5 @@
 from classes import Character, World, Game
+from account_management import User
 from flask import Flask, current_app, jsonify, request, abort
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,9 +14,6 @@ users = {
 }
 
 World.create('Prime', 100, 100)
-
-class User(UserMixin):
-    pass
 
 @login_manager.user_loader
 def user_loader(username):
