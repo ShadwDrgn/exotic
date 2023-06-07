@@ -27,7 +27,11 @@
             }
         },
         mounted() {
-            axios.get('/tiles?char=' + current_character).then(response => { console.log(response); this.tiles = response.data;});
+            axios.get('/tiles?char=' + current_character).then(response => {
+                tiles= response.data
+                tiles.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
+                this.tiles = response.data;
+            });
         }
     }).mount('#poop');
 </script>

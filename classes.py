@@ -3,14 +3,10 @@ class Game:
     characters = list()
     worlds = list()
     tick_rate = 15 # in seconds
+
     def last_tick():
         t = int(time.time())
         return t - t % Game.tick_rate
-    def get_character(name):
-        found = [c for c in Game.characters if c.name == name]
-        if len(found) > 0:
-            return found[0]
-        return None
 
 class Tile:
     def __init__(self, world, x, y, description='A Map Tile', tile_type='Forest'):
@@ -21,11 +17,10 @@ class Tile:
         self.description = description
 
     def __repr__(self):
-        return {'x': self.x, 'y': self.y, 'desc': self.description}
+        return f"{{'x': {self.x}, 'y': {self.y}, 'desc': {self.description}}}"
 
     def toJSON(self):
         return {'x': self.x, 'y': self.y, 'desc': self.description, 'tile_type': self.tile_type}
-
 
     def characters(self):
         return [c for c in Game.characters if c.position() == (self.world, self.x, self.y)]
@@ -52,6 +47,14 @@ class World:
 
     def characters(self):
         return [c for c in Game.characters if c.world == self]
+    
+    def create(world_name, map_width, map_height):
+        found_world = [w for w in Game.worlds if w.name == world_name]
+        if len(found_world) > 0:
+            return found_world[0]
+        world = World(world_name, map_width, map_height)
+        Game.worlds.append(world)
+        return world
 
 
 class Mobile:
@@ -102,3 +105,15 @@ class Character(Mobile):
         if len(found_character) > 0:
             return found_character[0]
         return None
+
+    def create(character_name, world_name, x, y):
+        found_character = [c for c in Game.characters if c.name == character_name]
+        if len(found_character) > 0:
+            raise Exception('Character exists')
+        worlds = [w for w in Game.worlds if w.name == world_name]
+        if len(worlds) == 0:
+            raise Exception('No such world')
+        world = worlds[0]
+        character = Character(character_name, world, int(x), int(y))
+        Game.characters.append(character)
+        return character

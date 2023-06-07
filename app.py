@@ -10,26 +10,34 @@ def tiles():
     tiles = [t.toJSON() for t in current_character.world.tiles if abs(t.x - current_character.x) <= 2 and abs(t.y - current_character.y) <=2]
     return jsonify(tiles)
 
-@app.route("/initialize")
-def initialize():
-    if not all(map(lambda v: v in request.args, ('x', 'y', 'char'))):
-        return jsonify({'error': 'x, y, and char fields are all required'}), 400
-    if any(i.name == 'prime' for i in Game.worlds):
-        prime = [w for w in Game.worlds if w.name == 'prime'][0]
-    else:
-        prime = World('prime', 100, 100)
-        Game.worlds.append(prime)
-    x, y = int(request.args.get('x')), int(request.args.get('y'))
-    if not any(c.name == request.args.get('char') for c in Game.characters):
-        c = Character(request.args.get('char'), prime, x, y)
-        Game.characters.append(c)
-    return jsonify({'status': 'ok', 'characters': [c.name for c in Game.characters], 'worlds': f'{len(Game.worlds)} Worlds' })
-    
+@app.route("/create_world")
+def create_world():
+    try:
+        world = World.create('Prime', 100, 100)
+        return jsonify({'worlds': [world.name for world in Game.worlds] })
+    except Exception as e:
+        print(e.__traceback__, flush=True)
+        return jsonify({'error': str(e) })
+        
+
+@app.route("/create_character")
+def create_character():
+    if not all(map(lambda param: param in request.args, ('name', 'x', 'y'))):
+        return jsonify({'error': 'name, x, and y are required fields' })
+    try:
+        character_name = request.args.get('name')
+        x = request.args.get('x')
+        y = request.args.get('y')
+        character = Character.create(character_name, 'Prime', x, y)
+        return jsonify({'Characters': [character.name for character in Game.characters] })
+    except Exception as e:
+        return jsonify({'error': str(e) })
+
 
 @app.route('/move')
 def move():
     x, y = int(request.args.get('x')), int(request.args.get('y'))
-    current_character = Game.get_character(request.args.get('char'))
+    current_character = Character.load(request.args.get('char'))
     if current_character is None:
         abort(400, 'No such character')
     current_character.x = x
