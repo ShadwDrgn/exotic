@@ -8,6 +8,7 @@ body {
   gap: 2px;
 }
 .map .tile {
+  user-select: none;
   cursor: pointer;
   display: flex;
   background: green;
