@@ -3,9 +3,18 @@ from account_management import User
 from flask import Flask, current_app, jsonify, request, abort
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import secrets
 
 app = Flask(__name__)
-app.secret_key = 'giant stupid string that is definitely at total secret!!'
+
+with open('flask.secret', 'w+') as f:
+    secret = f.read().strip()
+    if secret == '':
+        secret = secrets.token_hex(nbytes=32)
+        f.write(secret)
+    app.secret_key = secret
+        
+    
 login_manager = LoginManager()
 login_manager.init_app(app)
 

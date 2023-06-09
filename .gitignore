@@ -1,3 +1,5 @@
+# game secret
+flask.secret
 # virtualenv files
 bin/
 lib/
