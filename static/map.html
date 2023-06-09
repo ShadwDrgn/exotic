@@ -1,11 +1,23 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://unpkg.com/vue@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@3.3.3/dist/vuetify.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/vuetify@3.3.3/dist/vuetify.min.css" rel="stylesheet">
 <link href="/static/css/style.css" rel="stylesheet">
-<div id="poop">
-    <div class="map" id="map">
-        <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]" v-for="tile in tiles">{{ tile.x }}, {{ tile.y }}</div>
-    </div>
-    <div id="description">{{ desc }}</div>
+<div id="app">
+    <v-app theme="dark">
+        <v-app-bar><v-app-bar-title>The Exotic Zone</v-app-bar-title></v-app-bar>
+        <v-main>
+            <v-container>
+                <v-card class="pa-2" max-width="fit-content">
+                    <v-toolbar class="mb-2" height="40px"><v-toolbar-title>Map</v-toolbar-title></v-toolbar>
+                <div class="map" id="map">
+                    <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]" v-for="tile in tiles">{{ tile.x }}, {{ tile.y }}</div>
+                </div>
+                <div id="description">{{ desc }}</div>
+            </v-card>
+            </v-container>
+        </v-main>
+    </v-app>
 </div>
 <div class="resource-orb" style="background: linear-gradient(to top, red, red 50%, transparent 50%, transparent 100%);bottom: 10px;left:20%;"></div>
 <div class="resource-orb" style="background: linear-gradient(to top, blue, blue 30%, transparent 30%, transparent 100%);bottom: 10px;right:20%;"></div>
@@ -14,6 +26,8 @@
     const urlParams = new URLSearchParams(window.location.search);
     const current_character = urlParams.get('char');
     const { createApp } = Vue;
+    const { createVuetify } = Vuetify
+    const vuetify = createVuetify()
     createApp({
         data() {
           return { 
@@ -33,5 +47,5 @@
                 this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);;
             });
         }
-    }).mount('#poop');
+    }).use(vuetify).mount('#app');
 </script>
