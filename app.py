@@ -23,16 +23,9 @@ def user_loader(username):
     user.id = username
     return user
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return '''
-            <form action='login' method='POST'>
-            <input type='text' name='username' id='username' placeholder='username'/>
-            <input type='password' name='password' id='password' placeholder='password'/>
-            <input type='submit' name='submit'/>
-            </form>
-            '''
+    # Use a User.login method instead of all this
     username = request.form['username']
     if username in users and check_password_hash(users[username]['password'], request.form['password']):
         user = User()
@@ -47,16 +40,9 @@ def logout():
     logout_user()
     return jsonify({'message': 'User Logged out'})
 
-@app.route("/register", methods=['GET', 'POST'])
+@app.route("/register", methods=['POST'])
 def register():
-    if request.method == 'GET':
-        return '''
-            <form action='register' method='POST'>
-            <input type='text' name='username' id='username' placeholder='username'/>
-            <input type='password' name='password' id='password' placeholder='password'/>
-            <input type='submit' name='submit'/>
-            </form>
-            '''
+    # Use a User.register method instead of all this
     username = request.form['username']
     password_hash = generate_password_hash(request.form['password'])
     if username in users:
@@ -69,6 +55,7 @@ def register():
 def protected():
     return 'Logged in as: ' + current_user.id
 
+# Remove this (Use a state method on Character)
 @app.route("/tiles")
 def tiles():
     current_character = Character.load(request.args.get('char'))
@@ -77,6 +64,8 @@ def tiles():
     tiles = [t.toJSON() for t in current_character.world.tiles if abs(t.x - current_character.x) <= 2 and abs(t.y - current_character.y) <=2]
     return jsonify(tiles)
 
+
+# This entire endpoint should be behind an admin page
 @app.route("/create_world")
 def create_world():
     try:
@@ -89,6 +78,7 @@ def create_world():
 
 @app.route("/create_character")
 def create_character():
+    # Don't use this weird try catch. Also maybe Character.create(request.args)??
     if not all(map(lambda param: param in request.args, ('name', 'x', 'y'))):
         return jsonify({'error': 'name, x, and y are required fields' })
     try:
@@ -103,6 +93,7 @@ def create_character():
 
 @app.route('/move')
 def move():
+    # Use Character.move method instead of all this
     x, y = int(request.args.get('x')), int(request.args.get('y'))
     current_character = Character.load(request.args.get('char'))
     if current_character is None:
