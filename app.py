@@ -9,9 +9,7 @@ app.secret_key = 'giant stupid string that is definitely at total secret!!'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-users = {
-    'ShadwDrgn': {'password': 'pbkdf2:sha256:600000$OtUeSwJ3spOhzAjf$fda51497ebebb9b82914332c8bd22aaffb9f536565201f212af1ae8848a7caa1'}
-}
+users = dict()
 
 World.create('Prime', 100, 100)
 
