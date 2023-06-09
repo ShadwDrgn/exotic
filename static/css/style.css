@@ -32,7 +32,6 @@ body {
 }
 .map .tile:nth-child(13) {
     background-image: url(http://www.clker.com/cliparts/q/I/W/7/I/r/3-colors-hi.png);
-    background-blend-mode: screen;
     background-size: 1.4vb;
     background-repeat: no-repeat;
     background-position-y: center;
