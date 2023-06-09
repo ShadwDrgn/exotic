@@ -30,14 +30,6 @@ body {
 .map .tile.commercial {
     background: rgb(27, 167, 214);
 }
-.map .tile:nth-child(13) {
-    background-image: url(http://www.clker.com/cliparts/q/I/W/7/I/r/3-colors-hi.png);
-    background-size: 1.4vb;
-    background-repeat: no-repeat;
-    background-position-y: center;
-    background-position-x: center;
-}
-
 .resource-orb {
   height:200px;
   width: 200px;

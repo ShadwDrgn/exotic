@@ -2,6 +2,7 @@
 <script src="https://unpkg.com/vue@3"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@3.3.3/dist/vuetify.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/vuetify@3.3.3/dist/vuetify.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
 <link href="/static/css/style.css" rel="stylesheet">
 <div id="app">
     <v-app theme="dark">
@@ -11,7 +12,11 @@
                 <v-card class="pa-2" max-width="fit-content">
                     <v-toolbar class="mb-2" height="40px"><v-toolbar-title>Map</v-toolbar-title></v-toolbar>
                 <div class="map" id="map">
-                    <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]" v-for="tile in tiles">{{ tile.x }}, {{ tile.y }}</div>
+                    <template v-for="(tile, index) in tiles">
+                        <v-sheet @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]"><span style="position:absolute;">{{ tile.x }}, {{ tile.y }}</span>
+                            <v-icon v-if="index == 12" class="ma-auto" color="yellow">mdi-account</v-icon>
+                        </v-sheet>
+                    </template>
                 </div>
                 <div id="description">{{ desc }}</div>
             </v-card>
