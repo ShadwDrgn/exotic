@@ -8,8 +8,14 @@
 <body>
     <div id="app">
         <q-toolbar class="bg-deep-purple-10"><q-toolbar-title><q-btn color="grey" flat label="The Exotic Zone"></q-btn></q-toolbar-title>
+            <div class="q-mr-md text-light-blue-5">Characters:</div>
             <q-btn-dropdown color="primary" :label="current_character">
             </q-btn-dropdown>
+            <q-btn-dropdown color="primary" label="login/register">
+                <div><q-input label="Username" /></div>
+                <div><q-input type="password" label="Password" /></div>
+            </q-btn-dropdown>
+
         </q-toolbar>
         <div class="map" id="map">
             <div v-for="(tile, index) in tiles">
