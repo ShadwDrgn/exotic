@@ -8,13 +8,11 @@ body {
   gap: 2px;
 }
 .map .tile {
+  position: relative;
   user-select: none;
   cursor: pointer;
-  display: flex;
   background: green;
   border: 1px solid black;
-  align-items: baseline;
-  justify-content: center;
   font-size: 0.8em;
   width: 100%;
   height: 100%;

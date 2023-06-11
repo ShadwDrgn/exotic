@@ -7,14 +7,14 @@
     </head>
 <body>
     <div id="app">
-        <q-toolbar class="bg-deep-purple-10"><q-toolbar-title><q-btn color="primary" label="The Exotic Zone"></q-btn></q-toolbar-title>
+        <q-toolbar class="bg-deep-purple-10"><q-toolbar-title><q-btn color="grey" flat label="The Exotic Zone"></q-btn></q-toolbar-title>
             <q-btn-dropdown color="primary" :label="current_character">
             </q-btn-dropdown>
         </q-toolbar>
         <div class="map" id="map">
             <div v-for="(tile, index) in tiles">
                 <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]"><span style="position:absolute;">{{ tile.x }}, {{ tile.y }}</span>
-                    <q-icon v-if="index == 12" class="ma-auto" color="yellow" name="person"></q-icon>
+                    <q-icon v-if="index == 12" class="absolute-center" color="yellow" name="person"></q-icon>
                 </div>
             </div>
         </div>
