@@ -1,56 +1,56 @@
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/vue@3"></script>
-<script src="https://cdn.jsdelivr.net/npm/vuetify@3.3.3/dist/vuetify.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/vuetify@3.3.3/dist/vuetify.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
-<link href="/static/css/style.css" rel="stylesheet">
-<div id="app">
-    <v-app theme="dark">
-        <v-app-bar><v-app-bar-title>The Exotic Zone</v-app-bar-title></v-app-bar>
-        <v-main>
-            <v-container>
-                <v-card class="pa-2" max-width="fit-content">
-                    <v-toolbar class="mb-2" height="40px"><v-toolbar-title>Map</v-toolbar-title></v-toolbar>
-                <div class="map" id="map">
-                    <template v-for="(tile, index) in tiles">
-                        <v-sheet @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]"><span style="position:absolute;">{{ tile.x }}, {{ tile.y }}</span>
-                            <v-icon v-if="index == 12" class="ma-auto" color="yellow">mdi-account</v-icon>
-                        </v-sheet>
-                    </template>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
+        <link href="https://cdn.jsdelivr.net/npm/quasar@2.12.0/dist/quasar.prod.css" rel="stylesheet" type="text/css">
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <link href="/static/css/style.css" rel="stylesheet">
+    </head>
+<body>
+    <div id="app">
+        <q-toolbar class="bg-deep-purple-10"><q-toolbar-title><q-btn color="primary" label="The Exotic Zone"></q-btn></q-toolbar-title>
+            <q-btn-dropdown color="primary" :label="current_character">
+            </q-btn-dropdown>
+        </q-toolbar>
+        <div class="map" id="map">
+            <div v-for="(tile, index) in tiles">
+                <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]"><span style="position:absolute;">{{ tile.x }}, {{ tile.y }}</span>
+                    <q-icon v-if="index == 12" class="ma-auto" color="yellow" name="person"></q-icon>
                 </div>
-                <div id="description">{{ desc }}</div>
-            </v-card>
-            </v-container>
-        </v-main>
-    </v-app>
-</div>
-<div class="resource-orb" style="background: linear-gradient(to top, red, red 50%, transparent 50%, transparent 100%);bottom: 10px;left:20%;"></div>
-<div class="resource-orb" style="background: linear-gradient(to top, blue, blue 30%, transparent 30%, transparent 100%);bottom: 10px;right:20%;"></div>
+            </div>
+        </div>
+        <div id="description">{{ desc }}</div>
+    </div>
+    <div class="resource-orb" style="background: linear-gradient(to top, red, red 50%, transparent 50%, transparent 100%);bottom: 10px;left:20%;"></div>
+    <div class="resource-orb" style="background: linear-gradient(to top, blue, blue 30%, transparent 30%, transparent 100%);bottom: 10px;right:20%;"></div>
 
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const current_character = urlParams.get('char');
-    const { createApp } = Vue;
-    const { createVuetify } = Vuetify
-    const vuetify = createVuetify();
-    createApp({
-        data() {
-          return { 
-              tiles: null,
-              desc: null
-          }
-        },
-        methods: {
-            character_move(x, y) {
-                axios.get('/move', { params: {char: current_character, x: x, y: y}}).then(response => {
-                    this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@2.12.0/dist/quasar.umd.prod.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const current_character = urlParams.get('char');
+        const app = Vue.createApp({
+            data() {
+              return { 
+                  tiles: null,
+                  desc: null,
+                  current_character: urlParams.get('char')
+              }
+            },
+            methods: {
+                character_move(x, y) {
+                    axios.get('/move', { params: {char: current_character, x: x, y: y}}).then(response => {
+                        this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
+                    });
+                }
+            },
+            mounted() {
+                axios.get('/tiles?char=' + current_character).then(response => {
+                    this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);;
                 });
             }
-        },
-        mounted() {
-            axios.get('/tiles?char=' + current_character).then(response => {
-                this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);;
-            });
-        }
-    }).use(vuetify).mount('#app');
-</script>
+        }).use(Quasar).mount('#app');
+    </script>
+</body>
+</html>

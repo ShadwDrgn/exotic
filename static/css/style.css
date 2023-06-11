@@ -16,6 +16,8 @@ body {
   align-items: baseline;
   justify-content: center;
   font-size: 0.8em;
+  width: 100%;
+  height: 100%;
 }
 .map .tile.forest {
     background: green;
