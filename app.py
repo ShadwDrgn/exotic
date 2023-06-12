@@ -33,8 +33,9 @@ def user_loader(username):
 @app.route("/login", methods=['POST'])
 def login():
     # Use a User.login method instead of all this
-    username = request.form['username']
-    if username in users and check_password_hash(users[username]['password'], request.form['password']):
+    username = request.get_json()['username']
+    password = request.get_json()['password']
+    if username in users and check_password_hash(users[username]['password'], password):
         user = User()
         user.id = username
         login_user(user)
@@ -49,9 +50,10 @@ def logout():
 
 @app.route("/register", methods=['POST'])
 def register():
+    username = request.get_json()['username']
+    password = request.get_json()['password']
     # Use a User.register method instead of all this
-    username = request.form['username']
-    password_hash = generate_password_hash(request.form['password'])
+    password_hash = generate_password_hash(password)
     if username in users:
         return jsonify({'error': 'User already exists'}), 400
     users[username] = {'password': password_hash}

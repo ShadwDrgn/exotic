@@ -12,8 +12,12 @@
             <q-btn-dropdown color="primary" :label="current_character">
             </q-btn-dropdown>
             <q-btn-dropdown color="primary" label="login/register">
-                <div><q-input label="Username" /></div>
-                <div><q-input type="password" label="Password" /></div>
+                <q-form class="q-pa-sm" @submit="login">
+                    <div><q-input class="q-pa-sm" v-model="formUsername" name="username" label="Username" /></div>
+                    <div><q-input class="q-pa-sm" v-model="formPassword" name="password" type="password" label="Password" /></div>
+                    <q-btn type="submit" label="Login" color="primary"></q-btn>
+                    <q-btn label="Register" color="primary" @click="register"></q-btn>
+                </q-form>
             </q-btn-dropdown>
 
         </q-toolbar>
@@ -38,13 +42,27 @@
         const current_character = urlParams.get('char');
         const app = Vue.createApp({
             data() {
-              return { 
-                  tiles: null,
-                  desc: null,
-                  current_character: urlParams.get('char')
-              }
+                return {
+                    formUsername: '',
+                    formPassword: '',
+                    tiles: null,
+                    desc: null,
+                    current_character: urlParams.get('char')
+                }
             },
             methods: {
+                login(evt) {
+                    console.log(this.formPassword);
+                    axios.post('/login', { username: this.formUsername, password: this.formPassword}).then(response => {
+                        console.log(this.$refs);
+                    });
+                },
+                register() {
+                    console.log(this.formPassword);
+                    axios.post('/register', { username: this.formUsername, password: this.formPassword}).then(response => {
+                        console.log(this.$refs);
+                    });
+                },
                 character_move(x, y) {
                     axios.get('/move', { params: {char: current_character, x: x, y: y}}).then(response => {
                         this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
