@@ -1,7 +1,7 @@
 from classes import Character, World, Game
 from account_management import User
 from flask import Flask, current_app, jsonify, request, abort
-from flask_login import LoginManager, login_user, login_required, current_user, logout_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
 
@@ -39,7 +39,7 @@ def login():
         user = User()
         user.id = username
         login_user(user)
-        return jsonify({'message': 'logged in successfully'})
+        return jsonify({'current_user': user.id})
     logout_user()
     return jsonify({'error': 'Bad Login'}), 401
 
@@ -98,6 +98,12 @@ def create_character():
         return jsonify({'Characters': [character.name for character in Game.characters] })
     except Exception as e:
         return jsonify({'error': str(e) })
+
+@app.route('/gamestate')
+def gamestate():
+    if (isinstance(current_user, AnonymousUserMixin)):
+        return jsonify({'current_user': None})
+    return jsonify({'current_user': current_user.id})
 
 
 @app.route('/move')
