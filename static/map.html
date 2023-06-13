@@ -8,7 +8,6 @@
 <body>
     <div id="app">
         <q-toolbar class="shadow-2 bg-deep-purple-10 "><q-toolbar-title><q-btn color="grey" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
-            <div class="q-mr-md text-light-blue-5">Characters:</div>
             <q-btn-dropdown class="q-ma-sm" color="primary" label="Characters">
                 <q-list>
                     <q-list-item v-for="character in current_user.characters">{{ character }}</q-list-item>
@@ -26,7 +25,7 @@
             <q-btn class="q-ma-sm" v-if="current_user" :label="'Logout ' + current_user.id" color="primary" @click="logout"></q-btn>
 
         </q-toolbar>
-        <div class="map" id="map">
+        <div class="map q-pa-sm q-ma-md shadow-3 rounded-borders" id="map">
             <div v-for="(tile, index) in tiles">
                 <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]"><span style="position:absolute;">{{ tile.x }}, {{ tile.y }}</span>
                     <q-icon v-if="index == 12" class="absolute-center" color="yellow" name="person"></q-icon>
@@ -66,7 +65,7 @@
                 },
                 login() {
                     axios.post('/login', { username: this.formUsername, password: this.formPassword}).then(response => {
-                        this.current_user = response.data.current_user;
+                        this.gamestate();
                     });
                     this.formPassword = '';
                     this.formUsername = '';
@@ -77,20 +76,23 @@
                     });
                 },
                 character_move(x, y) {
-                    axios.get('/move', { params: {char: current_character, x: x, y: y}}).then(response => {
+                    axios.get('/move', { params: {char: this.current_character, x: x, y: y}}).then(response => {
                         this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
+                    });
+                },
+                gamestate() {
+                    axios.get('/gamestate').then(response => {
+                        this.current_user = response.data.current_user;
+                        if (this.current_user) {
+                            this.current_character = this.current_user.characters[0];
+                            axios.get('/tiles?char=' + this.current_character).then(response => {this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);});
+                            console.log(this.current_character);
+                        }
                     });
                 }
             },
             mounted() {
-                axios.get('/gamestate').then(response => {
-                    this.current_user = response.data.current_user;
-                });
-                /* This will end up in a state call.
-                axios.get('/tiles?char=' + current_character).then(response => {
-                    this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);;
-                });
-                */
+                this.gamestate();
             }
         }).use(Quasar, {
             config: {

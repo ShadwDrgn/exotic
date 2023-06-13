@@ -3,6 +3,8 @@ body {
 }
 .map {
   display: grid;
+  border: 1px solid black;
+  max-width:fit-content;
   grid-template-columns: repeat(5, 7vb);
   grid-template-rows: repeat(5, 7vb);
   gap: 2px;
