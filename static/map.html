@@ -28,7 +28,7 @@
         <div class="map q-pa-sm q-ma-md shadow-3 rounded-borders" id="map">
             <div v-for="(tile, index) in tiles">
                 <div @mouseover="desc=tile.desc" @click="character_move(tile.x, tile.y)" class="tile" :class="[tile.tile_type]"><span style="position:absolute;">{{ tile.x }}, {{ tile.y }}</span>
-                    <q-icon v-if="index == 12" class="absolute-center" color="yellow" name="person"></q-icon>
+                    <q-icon v-if="index == 12" class="absolute-center" color="yellow" name="person" size="2em"></q-icon>
                 </div>
             </div>
         </div>
