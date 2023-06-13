@@ -7,14 +7,14 @@
     </head>
 <body>
     <div id="app">
-        <q-toolbar class="bg-deep-purple-10"><q-toolbar-title><q-btn color="grey" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
+        <q-toolbar class="shadow-2 bg-deep-purple-10 "><q-toolbar-title><q-btn color="grey" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
             <div class="q-mr-md text-light-blue-5">Characters:</div>
-            <q-btn-dropdown color="primary" label="Characters">
+            <q-btn-dropdown class="q-ma-sm" color="primary" label="Characters">
                 <q-list>
                     <q-list-item><a href="#">Create new character</a></q-list-item>
                 </q-list>
             </q-btn-dropdown>
-            <q-btn-dropdown color="primary" label="login/register" v-if="current_user == null">
+            <q-btn-dropdown class="q-ma-sm" color="primary" label="login/register" v-if="current_user == null">
                 <q-form ref="loginform" class="q-pa-sm" @submit="login">
                     <div><q-input class="q-pa-sm" v-model="formUsername" name="username" label="Username" /></div>
                     <div><q-input class="q-pa-sm" v-model="formPassword" name="password" type="password" label="Password" /></div>
@@ -22,7 +22,7 @@
                     <q-btn label="Register" color="primary" @click="register"></q-btn>
                 </q-form>
             </q-btn-dropdown>
-            <q-btn v-if="current_user" label="Logout" color="primary" @click="logout"></q-btn>
+            <q-btn class="q-ma-sm" v-if="current_user" :label="'Logout ' + current_user" color="primary" @click="logout"></q-btn>
 
         </q-toolbar>
         <div class="map" id="map">
@@ -58,6 +58,9 @@
                 logout() {
                     axios.get('/logout').then(response => {
                         this.current_user = null;
+                        this.current_character = null;
+                        this.tiles = null;
+                        this.desc = null;
                     });
                 },
                 login() {
