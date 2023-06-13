@@ -11,6 +11,7 @@
             <div class="q-mr-md text-light-blue-5">Characters:</div>
             <q-btn-dropdown class="q-ma-sm" color="primary" label="Characters">
                 <q-list>
+                    <q-list-item v-for="character in current_user.characters">{{ character }}</q-list-item>
                     <q-list-item><a href="#">Create new character</a></q-list-item>
                 </q-list>
             </q-btn-dropdown>
@@ -22,7 +23,7 @@
                     <q-btn label="Register" color="primary" @click="register"></q-btn>
                 </q-form>
             </q-btn-dropdown>
-            <q-btn class="q-ma-sm" v-if="current_user" :label="'Logout ' + current_user" color="primary" @click="logout"></q-btn>
+            <q-btn class="q-ma-sm" v-if="current_user" :label="'Logout ' + current_user.id" color="primary" @click="logout"></q-btn>
 
         </q-toolbar>
         <div class="map" id="map">
@@ -71,12 +72,8 @@
                     this.formUsername = '';
                 },
                 register() {
-                    console.log(this.formPassword);
                     axios.post('/register', { username: this.formUsername, password: this.formPassword}).then(response => {
-                        axios.post('/login', { username: this.formUsername, password: this.formPassword}).then(response => {
-                            this.current_user = response.data.current_user;
-                        });
-
+                        this.login();
                     });
                 },
                 character_move(x, y) {
@@ -87,7 +84,6 @@
             },
             mounted() {
                 axios.get('/gamestate').then(response => {
-                    console.log(response.data.current_user);
                     this.current_user = response.data.current_user;
                 });
                 /* This will end up in a state call.

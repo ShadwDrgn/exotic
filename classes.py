@@ -79,10 +79,11 @@ class Mobile:
 
 
 class Character(Mobile):
-    def __init__(self, name, world, x, y):
+    def __init__(self, owner, name, world, x, y):
         self.seen = 0
         self.action_points = 0
         self.base_action_points = 50
+        self.owner = owner
         super().__init__(name, world, x, y)
 
     def update(self):
@@ -106,7 +107,7 @@ class Character(Mobile):
             return found_character[0]
         return None
 
-    def create(character_name, world_name, x, y):
+    def create(current_user, character_name, world_name, x, y):
         found_character = [c for c in Game.characters if c.name == character_name]
         if len(found_character) > 0:
             raise Exception('Character exists')
@@ -114,6 +115,6 @@ class Character(Mobile):
         if len(worlds) == 0:
             raise Exception('No such world')
         world = worlds[0]
-        character = Character(character_name, world, int(x), int(y))
+        character = Character(current_user.id, character_name, world, int(x), int(y))
         Game.characters.append(character)
         return character

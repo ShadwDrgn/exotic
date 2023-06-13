@@ -39,7 +39,7 @@ def login():
         user = User()
         user.id = username
         login_user(user)
-        return jsonify({'current_user': user.id})
+        return gamestate()
     logout_user()
     return jsonify({'error': 'Bad Login'}), 401
 
@@ -94,7 +94,7 @@ def create_character():
         character_name = request.args.get('name')
         x = request.args.get('x')
         y = request.args.get('y')
-        character = Character.create(character_name, 'Prime', x, y)
+        character = Character.create(current_user, character_name, 'Prime', x, y)
         return jsonify({'Characters': [character.name for character in Game.characters] })
     except Exception as e:
         return jsonify({'error': str(e) })
@@ -103,7 +103,8 @@ def create_character():
 def gamestate():
     if (isinstance(current_user, AnonymousUserMixin)):
         return jsonify({'current_user': None})
-    return jsonify({'current_user': current_user.id})
+    current_user.characters = [c.name for c in Game.characters if c.owner == current_user.id]
+    return jsonify({'current_user': { 'id': current_user.id, 'characters': current_user.characters } })
 
 
 @app.route('/move')
