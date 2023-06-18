@@ -9,9 +9,9 @@
     <div id="app">
         <q-toolbar class="shadow-2 bg-deep-purple-10 "><q-toolbar-title><q-btn color="grey" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
             <q-btn-dropdown class="q-ma-sm" color="primary" label="Characters">
-                <q-list>
-                    <q-list-item v-for="character in current_user.characters">{{ character }}</q-list-item>
-                    <q-list-item><a href="#">Create new character</a></q-list-item>
+                <q-list bordered separator>
+                    <q-item v-for="character in current_user.characters" clickable v-ripple><q-item-section>{{ character }}</q-item-section></q-item>
+                    <q-item clickable v-ripple><q-item-section>Create new character</q-item-section></q-item>
                 </q-list>
             </q-btn-dropdown>
             <q-btn-dropdown class="q-ma-sm" color="primary" label="login/register" v-if="current_user == null">
