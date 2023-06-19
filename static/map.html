@@ -11,7 +11,7 @@
             <q-btn-dropdown auto-close class="q-ma-sm" color="primary" label="Characters">
                 <q-list bordered separator>
                     <q-item v-for="character in current_user.characters" clickable v-ripple><q-item-section>{{ character }}</q-item-section></q-item>
-                    <q-item clickable v-ripple><q-item-section @click="createDialog = true">Create new character</q-item-section></q-item>
+                    <q-item clickable v-ripple><q-btn @click="createDialog = true" color="primary">Create new character</q-btn></q-item>
                 </q-list>
             </q-btn-dropdown>
             <q-btn-dropdown class="q-ma-sm" color="primary" label="login/register" v-if="current_user == null">
