@@ -8,10 +8,10 @@
 <body>
     <div id="app">
         <q-toolbar class="shadow-2 bg-deep-purple-10 "><q-toolbar-title><q-btn color="grey" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
-            <q-btn-dropdown class="q-ma-sm" color="primary" label="Characters">
+            <q-btn-dropdown auto-close class="q-ma-sm" color="primary" label="Characters">
                 <q-list bordered separator>
                     <q-item v-for="character in current_user.characters" clickable v-ripple><q-item-section>{{ character }}</q-item-section></q-item>
-                    <q-item clickable v-ripple><q-item-section>Create new character</q-item-section></q-item>
+                    <q-item clickable v-ripple><q-item-section @click="createDialog = true">Create new character</q-item-section></q-item>
                 </q-list>
             </q-btn-dropdown>
             <q-btn-dropdown class="q-ma-sm" color="primary" label="login/register" v-if="current_user == null">
@@ -33,6 +33,18 @@
             </div>
         </div>
         <div id="description">{{ desc }}</div>
+        <q-dialog v-model="createDialog">
+            <q-card class="charcreate">
+                <q-toolbar><q-toolbar-title>Create Character</q-toolbar-title></q-toolbar>
+                <q-form ref="createcharacterform" class="q-pa-sm" @submit="createCharacter">
+                    <div><q-input class="q-pa-sm" v-model="formCharacterName" name="charname" label="Character Name" /></div>
+                    <q-btn label="Cancel" color="primary" v-close-popup></q-btn>
+                    <q-btn type="submit" label="Create" color="primary" v-close-popup></q-btn>
+                </q-form>
+
+                
+            </q-card>
+        </q-dialog>
     </div>
     <div class="resource-orb" style="background: linear-gradient(to top, red, red 50%, transparent 50%, transparent 100%);bottom: 10px;left:20%;"></div>
     <div class="resource-orb" style="background: linear-gradient(to top, blue, blue 30%, transparent 30%, transparent 100%);bottom: 10px;right:20%;"></div>
@@ -51,7 +63,8 @@
                     tiles: null,
                     desc: null,
                     current_user: null,
-                    current_character: null
+                    current_character: null,
+                    createDialog: false
                 }
             },
             methods: {
@@ -73,6 +86,12 @@
                 register() {
                     axios.post('/register', { username: this.formUsername, password: this.formPassword}).then(response => {
                         this.login();
+                    });
+                },
+                createCharacter() {
+                    axios.post('/create_character', { charname: this.formCharacterName }).then(response => {
+
+                        this.gamestate();
                     });
                 },
                 character_move(x, y) {

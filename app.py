@@ -85,19 +85,14 @@ def create_world():
         return jsonify({'error': str(e) })
         
 
-@app.route("/create_character")
+@app.route("/create_character", methods=['POST'])
 def create_character():
     # Don't use this weird try catch. Also maybe Character.create(request.args)??
-    if not all(map(lambda param: param in request.args, ('name', 'x', 'y'))):
-        return jsonify({'error': 'name, x, and y are required fields' })
-    try:
-        character_name = request.args.get('name')
-        x = request.args.get('x')
-        y = request.args.get('y')
-        character = Character.create(current_user, character_name, 'Prime', x, y)
-        return jsonify({'Characters': [character.name for character in Game.characters] })
-    except Exception as e:
-        return jsonify({'error': str(e) })
+    character_name = request.get_json()['charname']
+    x = 3
+    y = 3
+    character = Character.create(current_user, character_name, 'Prime', x, y)
+    return gamestate()
 
 @app.route('/gamestate')
 def gamestate():
