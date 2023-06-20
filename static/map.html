@@ -10,7 +10,7 @@
         <q-toolbar class="bg-primary text-white shadow-2"><q-toolbar-title><q-btn color="secondary" text-color="white" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
             <q-btn-dropdown auto-close class="q-ma-sm" color="secondary" label="Characters">
                 <q-list bordered separator>
-                    <q-item v-for="character in current_user.characters" clickable v-ripple><q-item-section>{{ character }}</q-item-section></q-item>
+                    <q-item v-for="character in current_user.characters" clickable v-ripple @click="active_character(character)"><q-item-section>{{ character }}</q-item-section></q-item>
                     <q-item clickable v-ripple><q-btn @click="createDialog = true" color="secondary">Create new character</q-btn></q-item>
                 </q-list>
             </q-btn-dropdown>
@@ -99,12 +99,17 @@
                         this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);
                     });
                 },
+                active_character(charname) {
+                    axios.post('/active_character', { charname: charname }).then(response => {
+                        this.gamestate();
+                    });
+                },
                 gamestate() {
                     axios.get('/gamestate').then(response => {
                         this.current_user = response.data.current_user;
                         if (this.current_user) {
                             this.current_character = this.current_user.characters[0];
-                            axios.get('/tiles?char=' + this.current_character).then(response => {this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);});
+                            axios.get('/tiles').then(response => {this.tiles = response.data.sort((tilea, tileb) => tilea.y - tileb.y || tilea.x - tileb.x);});
                             console.log(this.current_character);
                         }
                     });
