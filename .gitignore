@@ -1,6 +1,7 @@
 # game secret
 flask.secret
 # virtualenv files
+include/
 bin/
 lib/
 pyvenv.cfg

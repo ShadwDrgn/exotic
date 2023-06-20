@@ -3,9 +3,11 @@ from account_management import User
 from flask import Flask, current_app, jsonify, request, abort, session
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
 import secrets
 
 app = Flask(__name__)
+
 
 with open('flask.secret', 'w+') as f:
     secret = f.read().strip()
@@ -13,7 +15,9 @@ with open('flask.secret', 'w+') as f:
         secret = secrets.token_hex(nbytes=32)
         f.write(secret)
     app.secret_key = secret
-        
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///game.sqlite3'
+db = SQLAlchemy(app)
     
 login_manager = LoginManager()
 login_manager.init_app(app)
