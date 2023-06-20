@@ -32,9 +32,9 @@ def user_loader(username):
 
 @app.route("/login", methods=['POST'])
 def login():
-    # Use a User.login method instead of all this
     username = request.get_json()['username']
     password = request.get_json()['password']
+    # Use a User.login method instead of all this
     if username in users and check_password_hash(users[username]['password'], password):
         user = User()
         user.id = username
@@ -64,7 +64,7 @@ def register():
 def protected():
     return 'Logged in as: ' + current_user.id
 
-# Remove this (Use a state method on Character)
+# Remove this (Use a gamestate method on Character)
 @app.route("/tiles")
 def tiles():
     current_character = Character.load(request.args.get('char'))
@@ -87,8 +87,8 @@ def create_world():
 
 @app.route("/create_character", methods=['POST'])
 def create_character():
-    # Don't use this weird try catch. Also maybe Character.create(request.args)??
-    character_name = request.get_json()['charname']
+    data = request.get_json()
+    character_name = data['charname']
     x = 3
     y = 3
     character = Character.create(current_user, character_name, 'Prime', x, y)
