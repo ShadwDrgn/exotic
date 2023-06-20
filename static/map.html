@@ -7,19 +7,19 @@
     </head>
 <body>
     <div id="app">
-        <q-toolbar class="shadow-2 bg-deep-purple-10 "><q-toolbar-title><q-btn color="grey" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
-            <q-btn-dropdown auto-close class="q-ma-sm" color="primary" label="Characters">
+        <q-toolbar class="bg-primary text-white shadow-2"><q-toolbar-title><q-btn color="secondary" text-color="white" flat label="1 EZ GAME"></q-btn></q-toolbar-title>
+            <q-btn-dropdown auto-close class="q-ma-sm" color="secondary" label="Characters">
                 <q-list bordered separator>
                     <q-item v-for="character in current_user.characters" clickable v-ripple><q-item-section>{{ character }}</q-item-section></q-item>
-                    <q-item clickable v-ripple><q-btn @click="createDialog = true" color="primary">Create new character</q-btn></q-item>
+                    <q-item clickable v-ripple><q-btn @click="createDialog = true" color="secondary">Create new character</q-btn></q-item>
                 </q-list>
             </q-btn-dropdown>
-            <q-btn-dropdown class="q-ma-sm" color="primary" label="login/register" v-if="current_user == null">
+            <q-btn-dropdown class="q-ma-sm" color="secondary" label="login/register" v-if="current_user == null">
                 <q-form ref="loginform" class="q-pa-sm" @submit="login">
                     <div><q-input class="q-pa-sm" v-model="formUsername" name="username" label="Username" /></div>
                     <div><q-input class="q-pa-sm" v-model="formPassword" name="password" type="password" label="Password" /></div>
-                    <q-btn type="submit" label="Login" color="primary"></q-btn>
-                    <q-btn label="Register" color="primary" @click="register"></q-btn>
+                    <q-btn type="submit" label="Login" color="secondary"></q-btn>
+                    <q-btn label="Register" color="secondary" @click="register"></q-btn>
                 </q-form>
             </q-btn-dropdown>
             <q-btn class="q-ma-sm" v-if="current_user" :label="'Logout ' + current_user.id" color="primary" @click="logout"></q-btn>
@@ -115,6 +115,11 @@
             }
         }).use(Quasar, {
             config: {
+                brand: {
+                    primary: '#333e48',
+                    secondary: '#78797A',
+                },
+                dark: true,
                 loadingBar: {
                     skipHijack: true
                 }
