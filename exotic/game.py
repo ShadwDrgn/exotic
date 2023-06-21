@@ -1,4 +1,5 @@
 import random
+from exotic import db
 class Game:
     characters = list()
     worlds = list()
@@ -78,7 +79,14 @@ class Mobile:
         return Mobile(name, x, y)
 
 
-class Character(Mobile):
+class Character(Mobile, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String, nullable=False)
+    x = db.Column(db.Integer)
+    y = db.Column(db.Integer)
+    world = db.Column(db.String, nullable=False)
+
     def __init__(self, owner, name, world, x, y):
         self.seen = 0
         self.action_points = 0
@@ -102,10 +110,7 @@ class Character(Mobile):
         return self.base_action_points
 
     def load(character_name):
-        found_character = [c for c in Game.characters if c.name == character_name]
-        if len(found_character) > 0:
-            return found_character[0]
-        return None
+        return Character.query.filter_by(name=character_name).first()
 
     def create(current_user, character_name, world_name, x, y):
         found_character = [c for c in Game.characters if c.name == character_name]
@@ -115,6 +120,9 @@ class Character(Mobile):
         if len(worlds) == 0:
             raise Exception('No such world')
         world = worlds[0]
-        character = Character(current_user.id, character_name, world, int(x), int(y))
-        Game.characters.append(character)
+        owner = int(current_user.id)
+        character = Character(owner=owner, name=character_name, world=world.name, x=int(x), y=int(y))
+        # Game.characters.append(character)
+        db.session.add(character)
+        db.session.commit()
         return character
