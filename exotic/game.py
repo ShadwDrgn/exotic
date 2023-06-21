@@ -20,11 +20,8 @@ class Tile:
     def __repr__(self):
         return f"{{'x': {self.x}, 'y': {self.y}, 'desc': {self.description}}}"
 
-    def toJSON(self):
-        return {'x': self.x, 'y': self.y, 'desc': self.description, 'tile_type': self.tile_type}
-
     def characters(self):
-        return [c for c in Game.characters if c.position() == (self.world, self.x, self.y)]
+        return [c.name for c in Character.query.filter_by(x=self.x, y=self.y).all()]
 
 
 class World:
@@ -108,9 +105,19 @@ class Character(Mobile, db.Model):
 
     def max_ap(self):
         return self.base_action_points
+    
+    def visible_tiles(self):
+        world = [world for world in Game.worlds if world.name == self.world][0]
+        results = list()
+        for t in world.tiles:
+            if (abs(t.x - self.x) > 2 or abs(t.y - self.y) > 2):
+                continue
+            data = { 'x': t.x, 'y': t.y, 'desc': t.description, 'tile_type': t.tile_type }
+            if (t.x == self.x and t.y == self.y):
+                data['characters'] = t.characters()
+            results.append(data)
+        return results
 
-    def load(character_name):
-        return Character.query.filter_by(name=character_name).first()
 
     def create(current_user, character_name, world_name, x, y):
         found_character = [c for c in Game.characters if c.name == character_name]

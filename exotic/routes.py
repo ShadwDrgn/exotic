@@ -21,7 +21,6 @@ def login():
     users = User.query.filter_by(username=username)
     user =  users.first()
     if user is None or not check_password_hash(user.password_hash, password):
-        logout_user(user)
         return jsonify({'error': 'Bad Login'}), 401
     login_user(user)
     return gamestate()
@@ -56,11 +55,8 @@ def protected():
 def tiles():
     if 'active_character' not in session:
         return jsonify({'error': 'Character invalid'}), 400
-    current_character = Character.load(session['active_character'])
-    worlds = [world for world in Game.worlds if world.name == current_character.world]
-    world = worlds[0]
-    tiles = [t.toJSON() for t in world.tiles if abs(t.x - current_character.x) <= 2 and abs(t.y - current_character.y) <=2]
-    return jsonify(tiles)
+    current_character = Character.query.filter_by(name=session['active_character']).first()
+    return jsonify(current_character.visible_tiles())
 
 @bp.route("/active_character", methods=['POST'])
 def active_character():
@@ -102,11 +98,12 @@ def move():
     if 'active_character' not in session:
         return jsonify({'error': 'Character invalid'}), 400
     x, y = int(request.args.get('x')), int(request.args.get('y'))
-    current_character = Character.load(session['active_character'])
+    current_character = Character.query.filter_by(name=session['active_character']).first()
     if current_character is None:
         abort(400, 'No such character')
     current_character.x = x
     current_character.y = y
+    print(f'DEBUG: {current_character}', flush=True)
     db.session.commit()
     return tiles()
 
