@@ -1,5 +1,7 @@
 import random
 from exotic import db
+
+
 class Game:
     characters = list()
     worlds = list()
@@ -133,3 +135,6 @@ class Character(Mobile, db.Model):
         db.session.add(character)
         db.session.commit()
         return character
+
+# THIS IS HORRIFYING GET RID OF IT
+World.create('Prime', 100, 100)
