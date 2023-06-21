@@ -15,8 +15,10 @@ def init_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///game.sqlite3'
 
     # set secret key from file
-    with open('flask.secret', 'w+') as f:
+    with open('flask.secret', 'a+') as f:
+        f.seek(0)
         secret = f.read().strip()
+        print(f'The secret is: {secret}', flush=True)
         if secret == '':
             secret = secrets.token_hex(nbytes=32)
             f.write(secret)
