@@ -136,5 +136,31 @@ class Character(Mobile, db.Model):
         db.session.commit()
         return character
 
+
+class Item(db.Model):
+    # Example 1, Sword, 1
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class Skill(db.Model):
+    # Example 1, Brawling, 1
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    character = db.Column(db.Integer, db.ForeignKey('user.id'))
+    item = db.Column(db.Integer, db.ForeignKey('item.id'))
+    affinity = db.Column(db.Integer, nullable=False)  # percent
+
+
+class Attack(db.Model):
+    # Example: 1, Punch, 1, null, 10, 5
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    skill = db.Column(db.Integer, db.ForeignKey('skill.id'))
+    item = db.Column(db.Integer, db.ForeignKey('item.id'))
+    hit = db.Column(db.Integer)  # percent
+    damage = db.Column(db.Integer)
+
+
 # THIS IS HORRIFYING GET RID OF IT
 World.create('Prime', 100, 100)
